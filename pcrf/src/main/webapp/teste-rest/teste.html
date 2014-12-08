@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Testes restful</title>
+    </head>
+    <body>
+    	<h3>Listas de compras</h3>
+    	
+        <form action="http://localhost:18080/pcrf/rest/compras/lista/add" method="POST">
+            Título <input name="titulo"/>
+	    <br/>
+            Usuário <input name="login"/>
+	    <br/>
+            Senha <input type="password" name="senha"/>
+	    <br/>
+            <input value="Adicionar lista" type="submit"/>
+        </form>
+
+	<br/>
+
+        <form action="http://localhost:18080/pcrf/rest/compras/lista/additem" method="POST">
+            Lista (id) <input name="idlista"/>
+	    <br/>
+            Item <input name="item"/>
+	    <br/>
+            Preço <input name="preco"/>
+	    <br/>
+            Usuário <input name="login"/>
+	    <br/>
+            Senha <input type="password" name="senha"/>
+	    <br/>
+            <input value="Adicionar item" type="submit"/>
+        </form>
+
+	<br/>
+
+        <form action="http://localhost:18080/pcrf/rest/compras/lista/rem" method="POST">
+            Lista (id) <input name="idlista"/>
+	    <br/>
+            Usuário <input name="login"/>
+	    <br/>
+            Senha <input type="password" name="senha"/>
+	    <br/>
+            <input value="Excluir lista" type="submit"/>
+        </form>
+
+	<br/>
+
+    	<h3>Compras</h3>
+    	
+        <form action="http://localhost:18080/pcrf/rest/compras/compra/add" method="POST">
+            Data (dd/mm/yyyy) <input name="data"/>
+	    <br/>
+            Local <input name="local"/>
+	    <br/>
+            Usuário <input name="login"/>
+	    <br/>
+            Senha <input type="password" name="senha"/>
+	    <br/>
+            <input value="Registrar compra" type="submit"/>
+        </form>
+
+	<br/>
+
+        <form action="http://localhost:18080/pcrf/rest/compras/compra/additem" method="POST">
+            Compra (id) <input name="idcompra"/>
+	    <br/>
+            Item <input name="item"/>
+	    <br/>
+            Qtd. <input name="qtd"/>
+	    <br/>
+            Preço <input name="preco"/>
+	    <br/>
+            Comprado (true/false) <input name="checked" value="true" />
+	    <br/>
+            Usuário <input name="login"/>
+	    <br/>
+            Senha <input type="password" name="senha"/>
+	    <br/>
+            <input value="Adicionar item" type="submit"/>
+        </form>
+
+    </body>
+</html>

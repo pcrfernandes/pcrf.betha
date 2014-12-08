@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+
+	<ui:define name="title-addon">
+		<h:form rendered="false">
+			<h:link outcome="#{bean.viewRedir}" value="Sair" style="display: inline-block; margin-top: 6px;" />
+		</h:form>
+	</ui:define>
+
+	<ui:define name="subtitle">
+		<h:outputText value="##{bean.entity.id}" style="display: inline-block; margin-left: 8px; color: #AAAAAA;" rendered="#{bean.editing}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="form">
+			<p:focus for=":form"/>
+			
+			<p:outputPanel layout="block">
+
+				<ui:insert name="form" />
+
+			</p:outputPanel>
+
+			<p:outputPanel layout="block" style="position: fixed; width: 100%; bottom: 0; padding: 10px 0; background: rgba(255,255,255,0.99); border-top: 1px solid #eeeeee;">
+				<p:commandButton action="#{bean.salvar}" value="Salvar" update=":form :messages" ajax="false" />
+				
+				<h:link outcome="#{bean.viewRedir}" value="Sair" style="display: inline-block; margin-left: 15px;" />
+			</p:outputPanel>
+		</h:form>
+		
+		<ui:insert name="dialogs" />
+		
+	</ui:define>
+	
+	
+</ui:composition>

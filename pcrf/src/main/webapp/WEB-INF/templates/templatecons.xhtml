@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+
+	<ui:define name="head">
+		<style>
+			#content {
+				margin-top: 0;
+			}
+		</style>
+	</ui:define>
+
+	<ui:define name="title-addon">
+		<h:form>
+			<p:button value="#{novoLabel == null? 'Novo': novoLabel}" icon="ui-icon-plus" outcome="#{viewcad}" style="margin-top: 4px;" />
+		</h:form>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="form">
+			<p:outputPanel layout="block">
+				<p:dataTable value="#{bean.lista}" var="row" emptyMessage="Nenhum registro encontrado" 
+					paginator="true" paginatorPosition="bottom" pageLinks="5" rows="15" paginatorAlwaysVisible="false">
+					
+					<p:column headerText="#" sortBy="#{row.id}" style="width: 36px; text-align: right;">
+						<h:outputText value="#{row.id}" style="color: #999999;" />
+					</p:column>
+
+					<p:column headerText="#{tituloLabel == null? 'Título': tituloLabel}" sortBy="#{row.label}">
+						<h:link value="#{row.label}" outcome="#{viewcad}" >
+							<f:param name="id" value="#{row.id}" />
+						</h:link>
+					</p:column>
+					
+					<ui:insert name="cols" />
+
+					<p:column style="width: 20px;" rendered="#{inativar == null? false: inativar}">
+						<p:commandLink actionListener="#{bean.prepararInativacao(row)}" immediate="true" process="@this" oncomplete="PF('cfmDlg').show();">
+							<span class="ui-icon ui-icon-trash"></span>
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>				
+			</p:outputPanel>
+		</h:form>
+		
+		<p:dialog header="Confirmação" id="cfmDialog" widgetVar="cfmDlg" dynamic="true" modal="true">
+			<h:form>
+				<h:outputText value="Você confirma a exclusão desse registro?" style="display: block; margin-bottom: 20px;" />
+				
+				<p:commandButton value="Sim" action="#{bean.inativar}" oncomplete="PF('cfmDlg').hide();" update=":content" />
+				<p:button value="Não" onclick="PF('cfmDlg').hide();" />
+			</h:form>
+		</p:dialog>
+	</ui:define>
+	
+	
+</ui:composition>

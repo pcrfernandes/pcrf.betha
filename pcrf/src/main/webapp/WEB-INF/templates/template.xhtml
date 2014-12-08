@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<meta charset="utf-8"/>
+	
+	<h:outputScript library="js" name="sticky.js" type="text/javascript"/>
+
+	<script>
+		$(document).ready(function() {
+			$(window).load(function() {
+		    	$(".fixed-panel").sticky();
+		    });
+		});
+	</script>
+
+	<title>#{title == null? 'Avaliação': title} - pcrfernandes@gmail.com | Betha sistemas</title>
+	
+	<ui:insert name="head" />
+</h:head>
+
+<h:body>
+	<h:outputStylesheet library="css" name="pcrf.css"/>
+
+	<p:outputPanel layout="block" styleClass="top-panel">
+		<p:commandLink id="menuButton" immediate="true" type="button"
+			rendered="#{sessionBean.isActive()}">
+			<p:graphicImage value="#{resource['img/icon-menu.png']}" />
+		</p:commandLink>
+		
+		<p:menu overlay="true" trigger="menuButton" my="left top" at="left bottom">
+			<p:menuitem value="Gerenciar listas de compras" outcome="/compras/lista/listacons.xhtml" />
+			<ui:remove><!-- <p:menuitem value="Nova lista de compras" outcome="/compras/lista/listacad.xhtml" />  --></ui:remove>
+			<p:menuitem value="Realizar compra" outcome="/compras/compra/compracad.xhtml" />
+			<p:menuitem value="Histórico de compras" outcome="/compras/compra/compracons.xhtml" />
+			<p:menuitem value="Gerenciar usuários" outcome="/admin/usuario/usuariocons.xhtml" rendered="#{sessionBean.isAdmin()}" />
+			<p:menuitem value="Início" outcome="/index.xhtml" />
+		</p:menu>
+		
+		<p:outputPanel style="display: inline-block;">
+			<h:outputText value="BuyIt " style="color: rgb(211, 238, 255); font-size: 1.25em;" /><h:outputText value=" pcrfernandes" />
+		</p:outputPanel>
+		
+		<p:outputPanel id="userPanel" layout="block" style="float: right; line-height: 22px;" 
+			rendered="#{sessionBean.isActive()}">
+			
+			<h:form>
+				<p:graphicImage value="#{resource['img/user.png']}" style="width: 20px; height: 20px; display: inline-block; margin-right: 5px; vertical-align: top;" />
+				<h:outputText value="#{sessionBean.usuario.login}" /><h:outputText value=" | " />
+				<p:commandLink value="logout" action="#{sessionBean.logout()}" immediate="true" process="@this" ajax="false" style="color: rgb(218, 228, 234) !important;" />
+			</h:form>
+		</p:outputPanel>
+	</p:outputPanel>
+
+	<p:outputPanel id="screen" layout="block">
+		<p:outputPanel id="titleBar" layout="block" styleClass="fixed-panel" style="">
+			<p:outputPanel layout="block" styleClass="addon">
+				<ui:insert name="title-addon" />
+			</p:outputPanel>
+
+			<h:outputText value="#{title}" styleClass="title" />
+			
+			<ui:insert name="subtitle" />
+
+		</p:outputPanel>
+
+		<p:messages id="messages" showDetail="false" closable="true" autoUpdate="true" />
+		
+		<p:outputPanel id="content" layout="block">
+			<ui:insert name="content" />
+		</p:outputPanel>
+	
+	</p:outputPanel>
+	
+</h:body>
+
+</html>

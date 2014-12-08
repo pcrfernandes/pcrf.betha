@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pcrf="http://java.sun.com/jsf/composite/cc">
+	
+	<ui:param name="title" value="Bem vindo ao BuyIt" />
+	
+	<ui:define name="head">
+		<style>
+			#menuIndex button {
+				display: block;
+				width: 100%;
+				text-align: left;
+				margin: 8px 2px;
+			}
+		</style>
+	</ui:define>
+
+	<ui:define name="content">
+	
+		<p:outputPanel id="menuIndex" layout="block" rendered="#{sessionBean.isActive()}">
+			<p:button value="Gerencie suas listas de compras" icon="ui-icon-note" outcome="/compras/lista/listacons.xhtml" />
+			
+			<p:button value="Controle suas compras" icon="ui-icon-cart" outcome="/compras/compra/compracad.xhtml" />
+			
+			<p:button value="Consulte seu histórico de compras" icon="ui-icon-calendar" outcome="/compras/compra/compracons.xhtml" />
+
+			<p:button value="Gerencie os usuários do sistema" icon="ui-icon-person" outcome="/admin/usuario/usuariocons.xhtml"
+				rendered="#{sessionBean.isAdmin()}" />
+		</p:outputPanel>
+	
+		<h:link value="Fazer login" outcome="/login.xhtml" rendered="#{!sessionBean.isActive()}" />
+	
+		<pcrf:footer />	
+	</ui:define>
+	
+	
+</ui:composition>

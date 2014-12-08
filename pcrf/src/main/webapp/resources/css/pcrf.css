@@ -1,0 +1,183 @@
+@CHARSET "UTF-8";
+
+body {
+	margin: 0;
+}
+
+.ui-widget .ui-widget {
+	font-size: 14px;
+}
+
+a, a:hover, a:active, a:visited, .ui-widget-content a {
+	color: rgb(47, 110, 247);
+	text-decoration: none !important;
+	border: none !important;
+	outline: none !important;
+}
+
+a:hover {
+	text-decoration: underline !important;
+}
+
+img {
+	border: none;
+	outline: none;
+}
+
+.top-panel {
+	padding: 8px; 
+	background-color: rgb(55, 72, 79); 
+	color: rgb(146, 164, 174); 
+}
+
+.top-panel .ui-widget, .top-panel .ui-widget .ui-widget {
+	font-size: 12px;
+}
+
+#menuButton {
+	display: inline-block; 
+	vertical-align: middle;
+	margin-right: 10px;	
+}
+
+#screen {
+	padding: 0 8px 8px 8px;
+}
+
+#content {
+	margin-top: 15px;
+	margin-bottom: 50px;
+}
+
+.ui-icon {
+	display: inline-block;
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td {
+	text-align: left;
+}
+
+.fixed-panel {
+	border-bottom: 1px solid #eeeeee !important;
+}
+
+.sticky-wrapper.is-sticky .fixed-panel {
+	border-bottom: 1px solid #eeeeee !important;
+	background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.fixed-panel {
+	z-index: 8;
+	line-height: 25px;
+	min-height: 37px;
+	background: #fff !important;
+	/*padding-left: 20px;*/
+	padding: 7px 0;
+	width: 100%;
+}
+
+.fixed-panel .addon {
+	display: inline-block;
+	float: right;
+}
+
+.sticky-wrapper.is-sticky .fixed-panel .addon {
+	margin-right: 15px;
+}
+
+.title {
+	font-size: 1.6em; 
+	line-height: 36px;
+	color: rgb(110, 110, 110);
+}
+
+.ui-menu {
+	width: auto;
+}
+
+.ui-menu.ui-widget .ui-menuitem-link .ui-menuitem-text {
+	margin: 0 12px;
+}
+
+.ui-inputfield.ui-widget, .ui-spinner.ui-widget, .ui-selectonemenu {
+	margin-bottom: 5px;
+	margin-right: 5px;	
+}
+
+.ui-inputfield.ui-inputtext, .ui-inputfield.ui-password, .ui-autocomplete {
+	width: 100%;
+	max-width: 330px;
+}
+
+.ui-selectonemenu {
+	width: 100% !important;
+	max-width: 338px !important;
+}
+
+.ui-selectonemenu label.ui-selectonemenu-label {
+	line-height: 18px;	
+}
+
+.ui-autocomplete-input.ui-inputfield {
+	width: 96%;
+}
+
+.fieldset .ui-outputlabel.ui-widget {
+	display: inline-block;
+	margin-right: 3px;
+}
+
+.fieldset.auto-label .ui-outputlabel.ui-widget {
+	width: auto;
+}
+
+.fieldset.label1 .ui-outputlabel.ui-widget {
+	width: 60px;
+}
+
+.fieldset.label2 .ui-outputlabel.ui-widget {
+	width: 100px;
+}
+
+.fieldset.label3 .ui-outputlabel.ui-widget {
+	width: 140px;
+}
+
+.fieldset.label4 .ui-outputlabel.ui-widget {
+	width: 180px;
+}
+
+.fieldset.label5 .ui-outputlabel.ui-widget {
+	width: 220px;
+}
+
+.ui-outputlabel-rfi {
+	color: rgb(224, 1, 1);
+	font-size: 1.4em;
+}
+
+.ui-datatable thead th, .ui-datatable tfoot td {
+	background-image: none;
+}
+
+.ui-fileupload.ui-widget {
+	display: inline-block;
+	margin-right: 5px;
+	vertical-align: top;
+}
+
+.ui-fileupload-content {
+	display: none;
+}
+
+.ui-fileupload-buttonbar {
+	padding: 0;
+	border: 0;
+	background: none;
+	display: inline-block;
+}
+
+.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td {
+	border-left: none;
+	border-right: none;
+}

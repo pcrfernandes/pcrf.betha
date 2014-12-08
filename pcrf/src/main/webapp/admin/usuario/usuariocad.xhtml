@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/templatecad.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+
+	<ui:param name="title" value="Usuário" />
+	<ui:param name="bean" value="#{usuarioCadBean}" />
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{usuarioCadBean.id}"/>
+		<s:viewAction action="#{usuarioCadBean.begin}"/>
+	</f:metadata>
+	
+	<ui:define name="form">
+		<p:outputPanel layout="block" styleClass="fieldset label2">
+			<p:outputLabel value="Usuário" for="loginInput" /> <p:inputText id="loginInput" value="#{usuarioCadBean.entity.login}" required="true" requiredMessage="Nome do usuário não informado" readonly="#{usuarioCadBean.editing}" />
+			<br/>
+
+			<ui:fragment rendered="#{!usuarioCadBean.editing}">
+				<p:outputLabel value="Senha" for="senhaInput" />
+				<p:password id="senhaInput" value="#{usuarioCadBean.entity.senha}" match="confirmInput" validatorMessage="Confirmação de senha inválida" feedback="true" required="true" requiredMessage="Senha não informada" />
+				<br/>
+	
+				<p:outputLabel value="Confirmar" for="confirmInput" />
+				<p:password id="confirmInput" value="#{usuarioCadBean.entity.senha}" feedback="true" required="true" requiredMessage="Confirmação de senha não informada" />
+			</ui:fragment>
+		</p:outputPanel>
+		
+	</ui:define>
+	
+	
+</ui:composition>

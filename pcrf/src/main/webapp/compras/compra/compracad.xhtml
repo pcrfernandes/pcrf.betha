@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/templatecad.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+
+	<ui:param name="title" value="Compra" />
+	<ui:param name="bean" value="#{compraCadBean}" />
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{compraCadBean.id}"/>
+		<s:viewAction action="#{compraCadBean.begin}"/>
+	</f:metadata>
+
+	<ui:define name="head">
+		<style>
+			.subgrupo {
+				display: block;
+				/*font-size: 1.1em;*/
+				margin: 10px 0 5px;
+			}
+		</style>
+	</ui:define>
+	
+	<ui:define name="form">
+		<p:outputPanel layout="block" styleClass="fieldset label1">
+			<p:outputLabel value="Data" for="dataInput" />
+			<p:calendar id="dataInput" value="#{compraCadBean.entity.data}" mode="popup" navigator="true" pattern="dd/MM/yyyy" showOn="button" converterMessage="Data inválida!" readonlyInput="true" yearRange="c-10:c+10" required="true" requiredMessage="Data não informada" /> 
+			<br/>
+			
+			<p:outputLabel value="Local" for="localInput" />
+			<p:inputText id="localInput" value="#{compraCadBean.entity.local}" required="true" requiredMessage="Local não informado" />
+			<p:watermark for="localInput" value="Informe o local da compra..." />
+			<br/>
+
+			<p:outputLabel value="Lista" for="listaInput"/>
+			<p:selectOneMenu id="listaInput" value="#{compraCadBean.lista}" var="lista" converter="entityConverter" style="vertical-align: middle;">
+				<f:selectItem itemLabel="Selecione..." itemValue="#{null}" />
+				<f:selectItems value="#{compraCadBean.listas}" var="listaitem" itemLabel="#{listaitem.label}" />
+				
+				<p:column>
+					<h:outputText value="#{lista.label}" />
+				</p:column>
+	
+				<p:ajax listener="#{compraCadBean.listaChanged}" update=":form:itensTable" />
+			</p:selectOneMenu>
+			<p:button icon="ui-icon-plus" outcome="/compras/lista/listacad.xhtml" target="_blank" rendered="false" />
+			
+			<p:outputPanel id="linkAddItensPanel" style="display: inline-block;">
+				<p:commandLink value="Adicionar outros itens..." actionListener="#{compraCadBean.prepararNovoItem()}" immediate="true" process="@this" update=":form:itensPanel :form:linkAddItensPanel" oncomplete="$(function(){PrimeFaces.focus('form:itemInput');});" style="display: inline-block;"
+					rendered="#{!compraCadBean.addingItem}" />
+			</p:outputPanel>
+			
+		</p:outputPanel>
+		
+		<p:outputPanel id="itensPanel" layout="block" style="margin-top: 15px; border-top: 1px solid #f4f4f4;">
+			<p:outputPanel id="addPanel" layout="block" styleClass="fieldset label1" style="padding: 6px 0;"
+				rendered="#{compraCadBean.addingItem}">
+				
+				<p:outputLabel value="Item" for="itemInput" /><p:autoComplete id="itemInput" value="#{compraCadBean.tituloTmp}" completeMethod="#{compraCadBean.completeItens}" minQueryLength="2" queryDelay="500" maxResults="10" cache="true" required="false" requiredMessage="Item não informado" />
+	
+				<p:outputLabel value="Qtd." for="qtdInput" style="width: auto;" /><p:inputText id="qtdInput" value="#{compraCadBean.qtdTmp}" required="false" requiredMessage="Quantidade não informada" style="width: 100px;" />
+				
+				<p:outputLabel value="Preço" for="precoInput" style="width: auto;" /><p:inputText id="precoInput" value="#{compraCadBean.precoTmp}" required="false" requiredMessage="Preço não informado" style="width: 100px;" />
+				
+				<p:commandButton value="Adicionar" actionListener="#{compraCadBean.addItem()}" process="addPanel" oncomplete="$(function(){PrimeFaces.focus('form:itemInput');});" 
+					update=":form:itensPanel" />
+			</p:outputPanel>
+
+			<h:outputText value="Comprar" styleClass="subgrupo" />
+			
+			<p:dataTable id="itensTable" value="#{compraCadBean.comprar}" var="item" emptyMessage="Nenhum item a comprar">
+				<p:column style="width: 20px; text-align: center">
+					<p:selectBooleanCheckbox value="#{item.checked}">
+						<p:ajax listener="#{compraCadBean.itemCheck(item)}" update=":form:itensPanel" />
+					</p:selectBooleanCheckbox>
+				</p:column>
+	
+				<p:column headerText="Imagem" style="text-align: center; width: 90px;">
+					<p:outputPanel id="imgPanel" layout="block">
+						<p:commandButton action="#{compraCadBean.prepararImg(item)}" icon="ui-icon-image" immediate="true" process="@this" 
+							rendered="#{empty item.img}" />
+	
+						<h:link outcome="/compras/imgview.xhtml" style="display: block; margin-bottom: 3px;" target="_blank"
+							rendered="#{not empty item.img}">
+							<p:graphicImage value="#{imgUtils.showImg(item.img)}" style="max-width: 90px; max-height: 90px;" />
+							
+							<f:param name="item" value="#{item.titulo}" />
+							<f:param name="f" value="#{item.img}" />
+						</h:link>
+	
+						<p:commandLink value="Remover" action="#{compraCadBean.removerImg(item)}" immediate="true" process="@this" update="imgPanel" style="font-size: 0.8em;"
+							rendered="#{not empty item.img}" />
+					</p:outputPanel>
+				</p:column>
+	
+				<p:column headerText="Item">
+					<p:inplace editor="true">
+						<p:inputText value="#{item.titulo}" required="true" />
+					</p:inplace>
+
+					<f:facet name="footer">
+						<h:outputText value="Totais" style="font-weight: bold;" />
+					</f:facet>
+				</p:column>
+	
+				<p:column headerText="Qtd." style="text-align: right; width: 120px;">
+					<p:inplace editor="true">
+						<p:inputText value="#{item.qtd}" />
+					</p:inplace>
+
+					<f:facet name="footer">
+						<h:outputText value="#{compraCadBean.comprar.size()}" style="font-weight: bold;">
+							<f:convertNumber pattern="#,##0" />
+						</h:outputText>
+					</f:facet>
+				</p:column>
+	
+				<p:column headerText="Preço unit." style="text-align: right; width: 120px;">
+					<p:inplace editor="true">
+						<p:inputText value="#{item.preco}" />
+					</p:inplace>
+				</p:column>
+	
+				<p:column headerText="Valor total" style="text-align: right; width: 120px;">
+					<h:outputText value="#{item.total}">
+						<f:convertNumber pattern="R$ #,##0.00" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<h:outputText value="#{compraCadBean.totalComprar}" style="font-weight: bold;">
+							<f:convertNumber pattern="R$ #,##0.00" />
+						</h:outputText>
+					</f:facet>
+				</p:column>
+	
+				<p:column style="width: 22px; text-align: center;">
+					<p:commandLink actionListener="#{compraCadBean.remItem(item)}" immediate="true" process="@this" update=":form:itensTable">
+						<span class="ui-icon ui-icon-trash" />
+					</p:commandLink>
+				</p:column>
+				
+			</p:dataTable>
+
+			<ui:fragment rendered="#{compraCadBean.comprados.size() gt 0}">
+				<p:commandLink value="Ver #{compraCadBean.comprados.size()} item(ns) já comprado(s)" actionListener="#{compraCadBean.verCompleto()}" immediate="true" process="@this" update=":form:itensPanel" style="display: inline-block; margin-top: 15px;"
+					rendered="#{!compraCadBean.verComprados}" />
+
+				<h:outputText value="Comprados" styleClass="subgrupo"
+					rendered="#{compraCadBean.verComprados}" />
+				
+				<p:dataTable id="okTable" value="#{compraCadBean.comprados}" var="itemOk" emptyMessage="Nenhum item comprado"
+					rendered="#{compraCadBean.verComprados}">
+					
+					<p:column style="width: 20px; text-align: center">
+						<p:graphicImage value="#{resource['img/icon-checked.png']}" />
+					</p:column>
+		
+					<p:column headerText="Imagem" style="text-align: center; width: 90px;">
+						<h:link outcome="/compras/imgview.xhtml" style="display: block; margin-bottom: 3px;" target="_blank"
+							rendered="#{not empty itemOk.img}">
+							<p:graphicImage value="#{imgUtils.showImg(itemOk.img)}" style="max-width: 90px; max-height: 90px;" />
+							
+							<f:param name="item" value="#{itemOk.titulo}" />
+							<f:param name="f" value="#{itemOk.img}" />
+						</h:link>
+					</p:column>
+
+					<p:column headerText="Item">
+						<p:inplace editor="true">
+							<p:inputText value="#{itemOk.titulo}" required="true" />
+						</p:inplace>
+	
+						<f:facet name="footer">
+							<h:outputText value="Totais" style="font-weight: bold;" />
+						</f:facet>
+					</p:column>
+		
+					<p:column headerText="Qtd." style="text-align: right; width: 120px;">
+						<p:inplace editor="true">
+							<p:inputText value="#{itemOk.qtd}" />
+						</p:inplace>
+	
+						<f:facet name="footer">
+							<h:outputText value="#{compraCadBean.comprados.size()}" style="font-weight: bold;">
+								<f:convertNumber pattern="#,##0" />
+							</h:outputText>
+						</f:facet>
+					</p:column>
+		
+					<p:column headerText="Preço unit." style="text-align: right; width: 120px;">
+						<p:inplace editor="true">
+							<p:inputText value="#{itemOk.preco}" />
+						</p:inplace>
+					</p:column>
+		
+					<p:column headerText="Valor total" style="text-align: right; width: 120px;">
+						<h:outputText value="#{itemOk.total}">
+							<f:convertNumber pattern="R$ #,##0.00" />
+						</h:outputText>
+	
+						<f:facet name="footer">
+							<h:outputText value="#{compraCadBean.totalComprados}" style="font-weight: bold;">
+								<f:convertNumber pattern="R$ #,##0.00" />
+							</h:outputText>
+						</f:facet>
+					</p:column>
+		
+					<p:column style="width: 22px; text-align: center;">
+						<p:commandLink actionListener="#{compraCadBean.itemUncheck(itemOk)}" immediate="true" process="@this" update=":form:itensPanel">
+							<span class="ui-icon ui-icon-arrowreturnthick-1-n" />
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</ui:fragment>
+		</p:outputPanel>
+		
+	</ui:define>
+	
+	<ui:define name="dialogs">
+		<p:dialog id="imgDialog" appendToBody="true" dynamic="true" widgetVar="imgDlg" modal="true" header="Imagem do item" resizable="false">
+			<h:form id="cameraForm">
+				<p:outputPanel layout="block" style="width: 380px; height: 360px;">
+					<p:tabView id="tabs" widgetVar="tabs">
+						<p:tab title="Fazer upload">
+							<br/>
+						
+							<p:fileUpload  rendered="true" label="Localizar imagem..."
+								mode="advanced"
+								auto="true"
+								sizeLimit="1048576"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+								fileUploadListener="#{compraCadBean.handleFileUpload}" />
+	
+						</p:tab>
+					
+						<p:tab title="Tirar foto">
+							<p:photoCam widgetVar="pc" listener="#{compraCadBean.capturarFoto}" />
+			
+							<br/>
+							<p:commandButton value="Salvar imagem" icon="ui-icon-check" onclick="PF('pc').capture();" />
+						</p:tab>
+					</p:tabView>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+	
+</ui:composition>

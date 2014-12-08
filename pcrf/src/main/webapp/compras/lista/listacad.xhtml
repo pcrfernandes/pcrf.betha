@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/templatecad.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+
+	<ui:param name="title" value="Lista de compras" />
+	<ui:param name="bean" value="#{listaCadBean}" />
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{listaCadBean.id}"/>
+		<s:viewAction action="#{listaCadBean.begin}"/>
+	</f:metadata>
+	
+	<ui:define name="form">
+		<p:outputPanel layout="block" styleClass="fieldset label1">
+			<p:outputLabel value="Lista" for="tituloInput" /> <p:inputText id="tituloInput" value="#{listaCadBean.entity.titulo}" required="true" requiredMessage="Título da lista não informado" />
+			<p:watermark for="tituloInput" value="Informe um título para esta lista..." />
+	
+			<p:outputPanel id="linkAddItensPanel" style="display: inline-block;">
+				<p:commandLink value="Adicionar itens..." actionListener="#{listaCadBean.prepararNovoItem()}" immediate="true" process="@this" update=":form:itensPanel :form:linkAddItensPanel" oncomplete="$(function(){PrimeFaces.focus('form:itemInput');});" style="display: inline-block;"
+					rendered="#{!listaCadBean.addingItem}" />
+			</p:outputPanel>
+		</p:outputPanel>
+		
+		<p:outputPanel id="itensPanel" layout="block">
+			<p:outputPanel id="addPanel" layout="block" styleClass="fieldset label1" style="margin-top: 15px; padding: 6px 0; border-top: 1px solid #f4f4f4;"
+				rendered="#{listaCadBean.addingItem}">
+				
+				<p:outputLabel value="Item" for="itemInput" />
+				<p:autoComplete id="itemInput" value="#{listaCadBean.tituloTmp}" completeMethod="#{listaCadBean.completeItens}" minQueryLength="2" queryDelay="500" maxResults="10" />
+	
+				<p:outputLabel value="Preço" for="precoInput" style="width: auto;" /><p:inputText id="precoInput" value="#{listaCadBean.precoTmp}" required="false" requiredMessage="Preço não informado" style="width: 100px;" />
+
+				<p:commandButton value="Adicionar" actionListener="#{listaCadBean.addItem()}" process="addPanel" oncomplete="$(function(){PrimeFaces.focus('form:itemInput');});" 
+					update=":form:itensPanel" />
+			</p:outputPanel>
+			
+			<p:dataTable id="itensTable" value="#{listaCadBean.entity.itens}" var="item" emptyMessage="Nenhum item adicionado">
+				<p:column headerText="Imagem" style="text-align: center; width: 90px;">
+					<p:outputPanel id="imgPanel" layout="block">
+						<p:commandButton action="#{listaCadBean.prepararImg(item)}" icon="ui-icon-image" immediate="true" process="@this" 
+							rendered="#{empty item.img}" />
+	
+						<h:link outcome="/compras/imgview.xhtml" style="display: block; margin-bottom: 3px;" target="_blank"
+							rendered="#{not empty item.img}">
+							<p:graphicImage value="#{imgUtils.showImg(item.img)}" style="max-width: 90px; max-height: 90px;" />
+							
+							<f:param name="item" value="#{item.titulo}" />
+							<f:param name="f" value="#{item.img}" />
+						</h:link>
+	
+						<p:commandLink value="Remover" action="#{listaCadBean.removerImg(item)}" immediate="true" process="@this" update="imgPanel" style="font-size: 0.8em;"
+							rendered="#{not empty item.img}" />
+					</p:outputPanel>
+				</p:column>
+				
+				<p:column headerText="Item">
+					<p:inplace editor="true">
+						<p:inputText value="#{item.titulo}" required="true" />
+					</p:inplace>
+
+					<f:facet name="footer">
+						<h:outputText value="Total" style="font-weight: bold;" />
+					</f:facet>
+				</p:column>
+	
+				<p:column headerText="Preço" style="text-align: right; width: 120px;">
+					<p:inplace editor="true">
+						<p:inputText value="#{item.preco}">
+							<f:convertNumber pattern="R$ #,##0.00" />
+						</p:inputText>
+					</p:inplace>
+	
+					<f:facet name="footer">
+						<h:outputText value="#{listaCadBean.entity.total}" style="font-weight: bold;">
+							<f:convertNumber pattern="R$ #,##0.00" />
+						</h:outputText>
+					</f:facet>
+				</p:column>
+				
+				<p:column style="width: 22px; text-align: center;">
+					<p:commandLink actionListener="#{listaCadBean.remItem(item)}" immediate="true" process="@this" update=":form:itensTable">
+						<span class="ui-icon ui-icon-trash" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+		</p:outputPanel>
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog id="imgDialog" appendToBody="true" dynamic="true" widgetVar="imgDlg" modal="true" header="Imagem do item" resizable="false">
+			<h:form id="cameraForm">
+				<p:outputPanel layout="block" style="width: 380px; height: 360px;">
+					<p:tabView id="tabs" widgetVar="tabs">
+						<p:tab title="Fazer upload">
+							<br/>
+						
+							<p:fileUpload  rendered="true" label="Localizar imagem..."
+								mode="advanced"
+								auto="true"
+								sizeLimit="1048576"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+								fileUploadListener="#{listaCadBean.handleFileUpload}" />
+	
+						</p:tab>
+					
+						<p:tab title="Tirar foto">
+							<p:photoCam widgetVar="pc" listener="#{listaCadBean.capturarFoto}" />
+			
+							<br/>
+							<p:commandButton value="Salvar imagem" icon="ui-icon-check" onclick="PF('pc').capture();" />
+						</p:tab>
+					</p:tabView>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+	
+</ui:composition>

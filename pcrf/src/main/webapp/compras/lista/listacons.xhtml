@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/WEB-INF/templates/templatecons.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:s="http://jboss.org/seam/faces">
+	
+	<ui:param name="title" value="Listas de compras" />
+	<ui:param name="bean" value="#{listaConsBean}" />
+	<ui:param name="viewcad" value="/compras/lista/listacad.xhtml"/>
+	<ui:param name="novoLabel" value="Nova lista" />
+	<ui:param name="inativar" value="true" />
+
+	<f:metadata>
+		<s:viewAction action="#{listaConsBean.begin}"/>
+	</f:metadata>
+	
+	<ui:define name="cols">
+		<p:column headerText="Valor Total" style="text-align: right; width: 120px;" sortBy="#{row.total}">
+			<h:outputText value="#{row.total}" >
+				<f:convertNumber pattern="R$ #,##0.00" />
+			</h:outputText>           						
+		</p:column>
+	</ui:define>
+	
+</ui:composition>
